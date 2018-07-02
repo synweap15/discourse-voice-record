@@ -8,5 +8,6 @@ enabled_site_setting :composer_audio_upload_enabled
 # register_asset 'javascripts/vendor/RecordRTC.js'
 
 register_html_builder('server:before-head-close') do
-  '<script src="/plugins/discourse-audio-upload/javascripts/vendor/RecordRTC.min.js"></script>'
+  #'<script src="/plugins/discourse-audio-upload/javascripts/vendor/RecordRTC.min.js"></script>'
+  '<script src="/plugins/discourse-audio-upload/javascripts/vendor/microm.min.js"></script>'
 end

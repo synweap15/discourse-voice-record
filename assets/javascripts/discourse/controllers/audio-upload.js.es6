@@ -83,6 +83,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
       if (this.state == 'idle') {
         this._clearRecording();
 
+        /*
         navigator.mediaDevices.getUserMedia({audio: true, video: false})
           .then((stream) => {
             this._recorder = RecordRTC(stream, {
@@ -99,9 +100,46 @@ export default Ember.Controller.extend(ModalFunctionality, {
             this.flash('It seems the Voice Recording API is not enabled in your browser. Sorry!', 'error');
             console.log(err);
           });
+        */
+
+        this._recorder = new Microm();
+        this._recorder.record()
+        .then(() => {
+          this.set('state', 'recording');
+        }).catch((err) => {
+          this.flash('An error occured. Did you enable voice recording in your browser?');
+          console.error(err);
+        });
+
 
       } else if (this.state == 'recording') {
 
+        this._recorder.stop()
+        .then((result) => {
+          let blob = result.blob;
+          blob.name = 'recording.mp3';
+          blob.lastModifiedDate = new Date();
+
+          let audio = document.createElement('audio');
+          audio.style.display = 'none';
+
+          $(audio).on('ended', () => {
+            this.set('state', 'idle');
+          })
+          .one('timeupdate', () => {
+            audio.currentTime = 0;
+            this.set('_audioEl', audio);
+            this.set('_audioData', blob);
+            this.set('state', 'idle');
+          })
+          .on('loadedmetadata', () => {
+            audio.currentTime = 48 * 3600;
+          });
+
+          audio.src = result.url;
+        });
+
+        /*
         this._recorder.stopRecording((url) => {
           let blob = this._recorder.getBlob();
           blob.name = 'recording.wav';
@@ -126,6 +164,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
           audio.src = url;
 
         });
+        */
 
       }
     },
