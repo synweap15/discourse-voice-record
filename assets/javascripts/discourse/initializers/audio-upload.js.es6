@@ -7,21 +7,21 @@ function initializePlugin(api)
 {
   const siteSettings = api.container.lookup('site-settings:main');
 
-  if (siteSettings.composer_voice_record_enabled) {
+  if (siteSettings.composer_audio_upload_enabled) {
     Composer.reopen({
       actions: {
-        showVoiceRecordModal: function () {
-          showModal('voice_record', { title: 'composer_voice_record.title' });
+        showAudioUploadModal: function () {
+          showModal('audio_upload', { title: 'composer_audio_upload.title' });
         }
       }
     });
 
     api.onToolbarCreate(toolbar => {
       toolbar.addButton({
-        id: 'composer_voice_record',
+        id: 'composer_audio_upload',
         group: 'extras',
         icon: 'microphone',
-        action: 'showVoiceRecordModal'
+        action: 'showAudioUploadModal'
       });
     });
   }
@@ -29,7 +29,7 @@ function initializePlugin(api)
 
 export default
 {
-  name: 'composer-voice-record',
+  name: 'composer-audio-upload',
 
   initialize(container)
   {

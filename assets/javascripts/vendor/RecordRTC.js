@@ -1,7 +1,4 @@
 'use strict';
-
-console.log('FUCK YEAH');
-
 // Last time updated: 2017-12-13 5:07:29 AM UTC
 
 // ________________
