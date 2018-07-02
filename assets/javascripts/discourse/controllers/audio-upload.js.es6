@@ -4,6 +4,10 @@ import {
   observes
 } from "ember-addons/ember-computed-decorators";
 
+import {
+  uploadIcon
+} from 'discourse/lib/utilities';
+
 
 function padStart(s, l, char) {
   let n = l - String(s).length;
@@ -54,6 +58,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
   _audioData: null,
   _audioEl: null,
 
+  @computed() uploadIcon: () => uploadIcon(),
 
   _clearRecording: function () {
     this._recorder = null;
@@ -105,7 +110,6 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
         this._recorder.stop()
         .then((result) => {
-          console.log('STOP');
           let blob = result.blob;
           blob.name = 'recording.mp3';
           blob.lastModifiedDate = new Date();

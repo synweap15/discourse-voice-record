@@ -1,26 +1,28 @@
-{{#d-modal-body class="composer-audio-upload-modal"}}
+{{#d-modal-body class="composer-audio-upload-modal" icon="microphone"}}
   <div class="composer-audio-upload-content">
-    <h4>Record an audio file</h4>
+    <h4>
+      Record an audio file
+    </h4>
     <p>
       <button class="btn btn-secondary" type="button" {{action "startStopRecording"}} class="record-button" disabled={{disallowRecord}}>
         {{#if isRecording}}
-        Stop recording
+        <span class="fa fa-stop-circle"></span> Stop recording
         {{else}}
-        Start recording
+        <span class="fa fa-circle"></span> Start recording
         {{/if}}
       </button>
       &nbsp;
       <button class="btn btn-secondary" type="button" {{action "startStopPlayback"}} class="play-button" disabled={{disallowPlayback}}>
         {{#if isPlaying}}
-        Stop playback
+        <span class="fa fa-stop"></span> Stop playback
         {{else}}
-        Start playback
+        <span class="fa fa-play"></span> Start playback
         {{/if}}
       </button>
     </p>
     <p>
       {{#if isProcessing}}
-      <em style="opacity: 0.5">Processing audio data, please wait...</em>
+      <span class="wait-text">Processing audio data, please wait...</span>
       {{else if isRecording}}
       &nbsp;
       {{else if hasRecording}}
