@@ -76,6 +76,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
       let $dialog = $('.composer-audio-upload-modal');
 
       $('.wmd-controls').fileupload('add', { files: [this._audioData] });
+      //$('.wmd-controls').fileupload('add', { fileInput: $dialog.find('.files-input') });
       this.send('closeModal');
     },
 
@@ -87,7 +88,8 @@ export default Ember.Controller.extend(ModalFunctionality, {
         .then((stream) => {
           this._recorder = RecordRTC(stream, {
             type: 'audio',
-            mimeType: 'audio/mpeg'
+            mimeType: 'audio/webm',
+            audioBitsPerSecond: 44100,
           });
 
           this._recorder.startRecording();
@@ -101,7 +103,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
         this._recorder.stopRecording((url) => {
           let blob = this._recorder.getBlob();
-          blob.name = 'recording.mp3';
+          blob.name = 'recording.wav';
           blob.lastModifiedDate = new Date();
 
           let audio = document.createElement('audio');
