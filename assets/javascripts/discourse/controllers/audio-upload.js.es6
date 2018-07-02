@@ -120,9 +120,6 @@ export default Ember.Controller.extend(ModalFunctionality, {
                     })
                     .on('loadedmetadata', () => {
                         audio.currentTime = 48 * 3600;
-                    })
-                    .catch((err) => {
-                        this.flash('Something went wrong during the recording!', 'error');
                     });
 
                     audio.src = url;
