@@ -2,7 +2,7 @@
   <div class="composer-audio-upload-content">
     <h4>Record an audio file</h4>
     <p>
-      <button class="btn btn-secondary" type="button" {{action "startStopRecording"}} class="record-button" disabled={{isPlaying}}>
+      <button class="btn btn-secondary" type="button" {{action "startStopRecording"}} class="record-button" disabled={{disallowRecord}}>
         {{#if isRecording}}
         Stop recording
         {{else}}
@@ -19,7 +19,11 @@
       </button>
     </p>
     <p>
-      {{#if hasRecording}}
+      {{#if isProcessing}}
+      <em class="description">Processing audio data, please wait...</em>
+      {{else if isRecording}}
+      &nbsp;
+      {{else if hasRecording}}
       Recording time: <strong>{{recordingDuration}}</strong> ({{recordingSize}})
       {{else}}
       Nothing has been recorded yet

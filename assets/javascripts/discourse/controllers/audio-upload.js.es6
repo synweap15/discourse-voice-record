@@ -13,15 +13,21 @@ function padStart(s, l, char) {
 
 
 export default Ember.Controller.extend(ModalFunctionality, {
-  state: 'idle', // 'idle', 'recording', 'playing'
+  state: 'idle', // 'idle', 'recording', 'playing', 'processing'
   isRecording: Ember.computed.equal('state', 'recording'),
   isPlaying: Ember.computed.equal('state', 'playing'),
+  isProcessing: Ember.computed.equal('state', 'processing'),
   isIdle: Ember.computed.equal('state', 'idle'),
   hasRecording: Ember.computed.notEmpty('_audioEl'),
 
   @computed('state', 'hasRecording')
   disallowPlayback(state, hasRecording) {
-    return state == 'recording' || !hasRecording;
+    return state != 'idle' && state != 'playing' || !hasRecording;
+  },
+
+  @computed('state')
+  disallowRecord(state) {
+    return state != 'idle' && state != 'recording';
   },
 
   @computed('_audioEl')
@@ -83,25 +89,6 @@ export default Ember.Controller.extend(ModalFunctionality, {
       if (this.state == 'idle') {
         this._clearRecording();
 
-        /*
-        navigator.mediaDevices.getUserMedia({audio: true, video: false})
-          .then((stream) => {
-            this._recorder = RecordRTC(stream, {
-              type: 'audio',
-              mimeType: 'audio/wav',
-              recorderType: StereoAudioRecorder,
-              audioBitsPerSecond: 44100,
-            });
-
-            this._recorder.startRecording();
-            this.set('state', 'recording');
-          })
-          .catch((err) => {
-            this.flash('It seems the Voice Recording API is not enabled in your browser. Sorry!', 'error');
-            console.log(err);
-          });
-        */
-
         this._recorder = new Microm();
         this._recorder.record()
         .then(() => {
@@ -114,8 +101,11 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
       } else if (this.state == 'recording') {
 
+        this.set('state', 'processing');
+
         this._recorder.stop()
         .then((result) => {
+          console.log('STOP');
           let blob = result.blob;
           blob.name = 'recording.mp3';
           blob.lastModifiedDate = new Date();
@@ -138,34 +128,6 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
           audio.src = result.url;
         });
-
-        /*
-        this._recorder.stopRecording((url) => {
-          let blob = this._recorder.getBlob();
-          blob.name = 'recording.wav';
-          blob.lastModifiedDate = new Date();
-
-          let audio = document.createElement('audio');
-          audio.style.display = 'none';
-
-          $(audio).on('ended', () => {
-            this.set('state', 'idle');
-          })
-          .one('timeupdate', () => {
-            audio.currentTime = 0;
-            this.set('_audioEl', audio);
-            this.set('_audioData', blob);
-            this.set('state', 'idle');
-          })
-          .on('loadedmetadata', () => {
-            audio.currentTime = 48 * 3600;
-          });
-
-          audio.src = url;
-
-        });
-        */
-
       }
     },
 
