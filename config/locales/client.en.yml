@@ -1,0 +1,7 @@
+en:
+  js:
+    composer:
+      composer_voice_record_button_title:  "Record & upload audio file"
+    composer_voice_record:
+      button_text: "Record & upload audio"
+      title: "Record & upload audio"

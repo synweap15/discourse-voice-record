@@ -1,0 +1,5 @@
+plugins:
+  composer_voice_record_enabled:
+    default: false
+    client: true
+
