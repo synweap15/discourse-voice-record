@@ -1,4 +1,4 @@
-{{#d-modal-body class="composer-audio-upload-modal" icon="microphone"}}
+{{#d-modal-body class="composer-audio-upload-modal" icon="microphone" dismissable=false}}
   <div class="composer-audio-upload-content">
     <h4>
       Record an audio file
@@ -37,6 +37,6 @@
 {{/d-modal-body}}
 
 <div class="modal-footer">
-  {{d-button action="uploadFile" class='btn-primary' icon=uploadIcon label='upload'}}
+  {{d-button action="uploadFile" class='btn-primary' icon=uploadIcon label='upload' disabled=disallowUpload}}
   {{d-modal-cancel close=(action "closeModal")}}
 </div>

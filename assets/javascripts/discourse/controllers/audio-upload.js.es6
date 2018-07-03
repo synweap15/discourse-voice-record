@@ -39,6 +39,11 @@ export default Ember.Controller.extend(ModalFunctionality, {
     return state == 'recording_start' || state != 'idle' && state != 'recording';
   },
 
+  @computed('state')
+  disallowUpload(state) {
+    return state != 'idle';
+  },
+
   @computed('_audioEl')
   recordingDuration(audio) {
     if (audio) {
@@ -175,6 +180,9 @@ export default Ember.Controller.extend(ModalFunctionality, {
       }
     },
 
+    closeModal() {
+      if(this.state == 'idle') this.get("modal").send("closeModal");
+    }
 
   }
 });
