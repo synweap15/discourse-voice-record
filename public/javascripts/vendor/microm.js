@@ -270,7 +270,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "startUserMedia",
 	    value: function startUserMedia(stream) {
-	      var recordRTC = RecordRTC(stream, { type: 'audio' });
+	      var recordRTC = RecordRTC(stream, { type: 'audio', recorderType: RecordRTC.StereoAudioRecorder});
 	      recordRTC.startRecording();
 
 	      this.recordRTC = recordRTC;
