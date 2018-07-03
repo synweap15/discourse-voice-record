@@ -62,30 +62,36 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var adapter = __webpack_require__(4);
 	var RecordRTC = __webpack_require__(5);
-	var Promise = __webpack_require__(6).Promise;
+	var Promise = __webpack_require__(7).Promise;
 	var Converter = __webpack_require__(1);
 	var Player = __webpack_require__(2);
 	var config = __webpack_require__(3);
+	var extend = __webpack_require__(6);
 
 	config.setup();
 
+	var defaultOptions = {
+	  converterOptions: {}
+	};
+
 	var Microm = (function () {
-	  function Microm() {
+	  function Microm(opts) {
 	    _classCallCheck(this, Microm);
 
+	    opts = extend(defaultOptions, opts);
 	    this.isRecording = false;
 	    this.recordRTC = null;
 	    this.player = null;
 	    this.mp3 = null;
 	    this.eventListeners = {};
-	    this.converter = new Converter();
+	    this.converter = new Converter(opts.converterOptions);
 	  }
 
 	  /**
 	   * Request browser microphone access and waits for it resolution.
 	   * If the user grant access, Microm will start recording the audio.
-	   * 
-	   * @return {Promise} 
+	   *
+	   * @return {Promise}
 	   */
 
 	  _createClass(Microm, [{
@@ -117,7 +123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Reproduce the player audio.
-	     * 
+	     *
 	     * @return {void}
 	     */
 	  }, {
@@ -128,7 +134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Pauses the player.
-	     * 
+	     *
 	     * @return {void}
 	     */
 	  }, {
@@ -145,7 +151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *   microm.stop().then(function(mp3) {
 	     *    console.log(mp3.url, mp3.blob);
 	     *   });
-	     *   
+	     *
 	     * @return {Promise} Will be resolved with the mp3.
 	     */
 	  }, {
@@ -168,8 +174,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Returns all mp3 info.
 	     * Right now we are converting the recorded data
 	     * everytime this function it's called.
-	     * 
-	     * @return {Promise} 
+	     *
+	     * @return {Promise}
 	     */
 	  }, {
 	    key: "getMp3",
@@ -181,8 +187,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Blob enconded as Wav.
-	     * 
-	     * @return {Blob} 
+	     *
+	     * @return {Blob}
 	     */
 	  }, {
 	    key: "getWav",
@@ -195,8 +201,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example
 	     *   microm.getUrl();
 	     *   // Something like --> "blob:http%3A//localhost%3A8090/8b40fc63-8bb7-42e3-9622-9dcc59e5df8f"
-	     *   
-	     * @return {String} 
+	     *
+	     * @return {String}
 	     */
 	  }, {
 	    key: "getUrl",
@@ -207,8 +213,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Blob value of the recorded data.
-	     * 
-	     * @return {Blob} 
+	     *
+	     * @return {Blob}
 	     */
 	  }, {
 	    key: "getBlob",
@@ -219,8 +225,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * ArrayBuffer of the recorded data (raw binary data buffer).
-	     * 
-	     * @return {ArrayBuffer} 
+	     *
+	     * @return {ArrayBuffer}
 	     */
 	  }, {
 	    key: "getBuffer",
@@ -236,7 +242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *   microm.getBase64().then(function(base64) {
 	     *     console.log(base64);
 	     *   });
-	     *   
+	     *
 	     * @return {Promise}
 	     */
 	  }, {
@@ -248,9 +254,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Forces file download.
-	     * 
-	     * @param  {String} fileName 
-	     * 
+	     *
+	     * @param  {String} fileName
+	     *
 	     * @return {void}
 	     */
 	  }, {
@@ -285,9 +291,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Attach an event handler function for event name
-	     * @param  {String} eventName 
-	     * @param  {Function} handler   
-	     * @return {void} 
+	     * @param  {String} eventName
+	     * @param  {Function} handler
+	     * @return {void}
 	     */
 
 	  }, {
@@ -299,8 +305,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Remove an event handler
-	     * @param  {String} eventName 
-	     * @return {void}           
+	     * @param  {String} eventName
+	     * @return {void}
 	     */
 	  }, {
 	    key: "off",
@@ -325,9 +331,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var Lame = __webpack_require__(8);
-	var Promise = __webpack_require__(6).Promise;
-	var extend = __webpack_require__(9);
+	var Lame = __webpack_require__(9);
+	var Promise = __webpack_require__(7).Promise;
+	var extend = __webpack_require__(6);
 
 	var defaultEncodeOptions = {
 	  channels: 1,
@@ -335,15 +341,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  kbps: 128,
 	  maxSamples: 1152
 	};
+
+	var defaultOptions = {
+	  progressCallback: null
+	};
+
 	var channels = {
 	  mono: 1,
 	  stereo: 2
 	};
 
 	var Converter = (function () {
-	  function Converter() {
+	  function Converter(opts) {
 	    _classCallCheck(this, Converter);
 
+	    this.opts = extend(defaultOptions, opts || {});
 	    this.lame = new Lame();
 	  }
 
@@ -420,6 +432,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          data,
 	          blob,
 	          url;
+	      var progressStep = 1. / Math.ceil(remaining / maxSamples),
+	          index = 0;
+
+	      if (this.opts.progressCallback) {
+	        this.opts.progressCallback(0.);
+	      }
 
 	      while (remaining >= maxSamples) {
 	        i += maxSamples;
@@ -430,6 +448,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        mp3buf.length > 0 && buffer.push(new Int8Array(mp3buf));
 
 	        remaining -= maxSamples;
+	        ++index;
+
+	        if (this.opts.progressCallback) {
+	          this.opts.progressCallback(Math.min(index * progressStep, 1.));
+	        }
+	      }
+
+	      if (this.opts.progressCallback) {
+	        this.opts.progressCallback(1.);
 	      }
 
 	      data = mp3enc.flush();
@@ -465,7 +492,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(8);
 
 	var eventNames = ['loadedmetadata', 'timeupdate', 'play', 'pause', 'ended'];
 
@@ -593,7 +620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var RSVP = __webpack_require__(6);
+	var RSVP = __webpack_require__(7);
 
 	module.exports = (function () {
 	  function setup() {
@@ -6323,6 +6350,98 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var hasOwn = Object.prototype.hasOwnProperty;
+	var toStr = Object.prototype.toString;
+
+	var isArray = function isArray(arr) {
+		if (typeof Array.isArray === 'function') {
+			return Array.isArray(arr);
+		}
+
+		return toStr.call(arr) === '[object Array]';
+	};
+
+	var isPlainObject = function isPlainObject(obj) {
+		if (!obj || toStr.call(obj) !== '[object Object]') {
+			return false;
+		}
+
+		var hasOwnConstructor = hasOwn.call(obj, 'constructor');
+		var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
+		// Not own constructor property must be Object
+		if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
+			return false;
+		}
+
+		// Own properties are enumerated firstly, so to speed up,
+		// if last one is own, then all properties are own.
+		var key;
+		for (key in obj) {/**/}
+
+		return typeof key === 'undefined' || hasOwn.call(obj, key);
+	};
+
+	module.exports = function extend() {
+		var options, name, src, copy, copyIsArray, clone,
+			target = arguments[0],
+			i = 1,
+			length = arguments.length,
+			deep = false;
+
+		// Handle a deep copy situation
+		if (typeof target === 'boolean') {
+			deep = target;
+			target = arguments[1] || {};
+			// skip the boolean and the target
+			i = 2;
+		} else if ((typeof target !== 'object' && typeof target !== 'function') || target == null) {
+			target = {};
+		}
+
+		for (; i < length; ++i) {
+			options = arguments[i];
+			// Only deal with non-null/undefined values
+			if (options != null) {
+				// Extend the base object
+				for (name in options) {
+					src = target[name];
+					copy = options[name];
+
+					// Prevent never-ending loop
+					if (target !== copy) {
+						// Recurse if we're merging plain objects or arrays
+						if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
+							if (copyIsArray) {
+								copyIsArray = false;
+								clone = src && isArray(src) ? src : [];
+							} else {
+								clone = src && isPlainObject(src) ? src : {};
+							}
+
+							// Never move original objects, clone them
+							target[name] = extend(deep, clone, copy);
+
+						// Don't bring in undefined values
+						} else if (typeof copy !== 'undefined') {
+							target[name] = copy;
+						}
+					}
+				}
+			}
+		}
+
+		// Return the modified object
+		return target;
+	};
+
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var require;/* WEBPACK VAR INJECTION */(function(process, global) {/*!
 	 * @overview RSVP - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2016 Yehuda Katz, Tom Dale, Stefan Penner and contributors
@@ -8872,7 +8991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), (function() { return this; }())))
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -8891,7 +9010,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {function lamejs() {
@@ -24486,98 +24605,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	//lamejs();
 	module.exports = lamejs;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var hasOwn = Object.prototype.hasOwnProperty;
-	var toStr = Object.prototype.toString;
-
-	var isArray = function isArray(arr) {
-		if (typeof Array.isArray === 'function') {
-			return Array.isArray(arr);
-		}
-
-		return toStr.call(arr) === '[object Array]';
-	};
-
-	var isPlainObject = function isPlainObject(obj) {
-		if (!obj || toStr.call(obj) !== '[object Object]') {
-			return false;
-		}
-
-		var hasOwnConstructor = hasOwn.call(obj, 'constructor');
-		var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
-		// Not own constructor property must be Object
-		if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
-			return false;
-		}
-
-		// Own properties are enumerated firstly, so to speed up,
-		// if last one is own, then all properties are own.
-		var key;
-		for (key in obj) {/**/}
-
-		return typeof key === 'undefined' || hasOwn.call(obj, key);
-	};
-
-	module.exports = function extend() {
-		var options, name, src, copy, copyIsArray, clone,
-			target = arguments[0],
-			i = 1,
-			length = arguments.length,
-			deep = false;
-
-		// Handle a deep copy situation
-		if (typeof target === 'boolean') {
-			deep = target;
-			target = arguments[1] || {};
-			// skip the boolean and the target
-			i = 2;
-		} else if ((typeof target !== 'object' && typeof target !== 'function') || target == null) {
-			target = {};
-		}
-
-		for (; i < length; ++i) {
-			options = arguments[i];
-			// Only deal with non-null/undefined values
-			if (options != null) {
-				// Extend the base object
-				for (name in options) {
-					src = target[name];
-					copy = options[name];
-
-					// Prevent never-ending loop
-					if (target !== copy) {
-						// Recurse if we're merging plain objects or arrays
-						if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
-							if (copyIsArray) {
-								copyIsArray = false;
-								clone = src && isArray(src) ? src : [];
-							} else {
-								clone = src && isPlainObject(src) ? src : {};
-							}
-
-							// Never move original objects, clone them
-							target[name] = extend(deep, clone, copy);
-
-						// Don't bring in undefined values
-						} else if (typeof copy !== 'undefined') {
-							target[name] = copy;
-						}
-					}
-				}
-			}
-		}
-
-		// Return the modified object
-		return target;
-	};
-
-
 
 /***/ },
 /* 10 */

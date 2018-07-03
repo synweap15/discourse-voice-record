@@ -28,6 +28,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
   isProcessing: Ember.computed.equal('state', 'processing'),
   isIdle: Ember.computed.equal('state', 'idle'),
   hasRecording: Ember.computed.notEmpty('_audioEl'),
+  processingProgress: 0,
 
   @computed('state', 'hasRecording')
   disallowPlayback(state, hasRecording) {
@@ -74,6 +75,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
   _clearRecording: function () {
     this._recorder = null;
     this.set('_audioData', null);
+    this.set('processingProgress', 0);
     if (this._audioEl) {
       this._audioEl.remove();
       this.set('_audioEl', null);
@@ -105,7 +107,13 @@ export default Ember.Controller.extend(ModalFunctionality, {
       if (this.state == 'idle') {
         this._clearRecording();
 
-        this._recorder = new Microm();
+        this._recorder = new Microm({
+          converterOptions: {
+            progressCallback: progress => {
+              this.set('processingProgress', Math.floor(100 * progress));
+            }
+          }
+        });
         this._recorder.record()
         .then(stream => {
           this._stream = stream;

@@ -22,7 +22,7 @@
     </p>
     <p>
       {{#if isProcessing}}
-      <span class="wait-text">Processing audio data, please wait...</span>
+      <span class="wait-text">Processing audio data ({{processingProgress}}%)</span>
       {{else if isRecordingStart}}
       <span class="wait-text">Initializing audio recording...</span>
       {{else if isRecording}}
