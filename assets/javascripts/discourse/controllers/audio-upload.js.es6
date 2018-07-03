@@ -15,10 +15,15 @@ function padStart(s, l, char) {
   return s;
 }
 
+function stopStream(stream) {
+  stream.getAudioTracks().forEach(track => track.stop());
+}
+
 
 export default Ember.Controller.extend(ModalFunctionality, {
-  state: 'idle', // 'idle', 'recording', 'playing', 'processing'
+  state: 'idle', // 'idle', 'recording', 'recording_start', 'playing', 'processing'
   isRecording: Ember.computed.equal('state', 'recording'),
+  isRecordingStart: Ember.computed.equal('state', 'recording_start'),
   isPlaying: Ember.computed.equal('state', 'playing'),
   isProcessing: Ember.computed.equal('state', 'processing'),
   isIdle: Ember.computed.equal('state', 'idle'),
@@ -31,14 +36,19 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
   @computed('state')
   disallowRecord(state) {
-    return state != 'idle' && state != 'recording';
+    return state == 'recording_start' || state != 'idle' && state != 'recording';
   },
 
   @computed('_audioEl')
   recordingDuration(audio) {
     if (audio) {
-      let d = moment.duration(audio.duration * 1000);
-      return Math.floor(d.asMinutes()) + ':' + padStart(d.seconds(), 2, '0');
+      let secs = audio.duration * 1000;
+      if(secs < 1000) {
+        return '< 1s';
+      } else {
+        let d = moment.duration(secs);
+        return Math.floor(d.asMinutes()) + ':' + padStart(d.seconds(), 2, '0');
+      }
     }
     return '-';
   },
@@ -57,6 +67,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
   _recorder: null,
   _audioData: null,
   _audioEl: null,
+  _stream: null,
 
   @computed() uploadIcon: () => uploadIcon(),
 
@@ -96,9 +107,11 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
         this._recorder = new Microm();
         this._recorder.record()
-        .then(() => {
-          this.set('state', 'recording');
-        }).catch((err) => {
+        .then(stream => {
+          this._stream = stream;
+          this.set('state', 'recording_start');
+          setTimeout(() => { this.set('state', 'recording'); }, 1050);
+        }).catch(err => {
           this.flash('An error occured. Did you enable voice recording in your browser?');
           console.error(err);
         });
@@ -109,7 +122,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
         this.set('state', 'processing');
 
         this._recorder.stop()
-        .then((result) => {
+        .then(result => {
           let blob = result.blob;
           blob.name = 'recording.mp3';
           blob.lastModifiedDate = new Date();
@@ -125,6 +138,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
             this.set('_audioEl', audio);
             this.set('_audioData', blob);
             this.set('state', 'idle');
+            stopStream(this._stream);
           })
           .on('loadedmetadata', () => {
             audio.currentTime = 48 * 3600;
