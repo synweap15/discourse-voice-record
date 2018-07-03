@@ -21,7 +21,8 @@ function initializePlugin(api)
         id: 'composer_audio_upload',
         group: 'extras',
         icon: 'microphone',
-        action: 'showAudioUploadModal'
+        action: 'showAudioUploadModal',
+        title: 'composer.composer_audio_upload_button_title'
       });
     });
   }
