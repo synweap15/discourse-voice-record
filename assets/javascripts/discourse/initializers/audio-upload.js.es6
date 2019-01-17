@@ -20,7 +20,7 @@ function initializePlugin(api)
       toolbar.addButton({
         id: 'composer_audio_upload',
         group: 'extras',
-        icon: 'microphone',
+        icon: 'far-microphone',
         action: 'showAudioUploadModal',
         title: 'composer.composer_audio_upload_button_title'
       });
