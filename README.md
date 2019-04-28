@@ -12,6 +12,8 @@ Installation
 
 After the [standard installation](https://meta.discourse.org/t/install-a-plugin/19157), enable `composer_audio_upload_enabled` in the settings.
 
+Please also ensure that you enable uploads of "mp3" files type in the admin panel.
+
 When composing a new message, simply click on the microphone icon to start recording. After you're done, your recording will be converted to mp3 for enhanced cross-browser compatibility.
 
 
