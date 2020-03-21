@@ -6,7 +6,7 @@ import {
 
 import {
   uploadIcon
-} from 'discourse/lib/utilities';
+} from 'discourse/lib/uploads';
 
 
 function padStart(s, l, char) {
